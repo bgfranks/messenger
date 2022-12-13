@@ -40,10 +40,7 @@ export default function Header() {
           />
           <p className='text-blue-400'>Welcome to Meta Messenger</p>
         </div>
-        <Link
-          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-          href='/auth/signin'
-        >
+        <Link className='btn' href='/auth/signin'>
           Sign In
         </Link>
       </div>
