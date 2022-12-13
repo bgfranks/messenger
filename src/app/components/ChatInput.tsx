@@ -1,8 +1,24 @@
 'use client'
 import { FormEvent, useState } from 'react'
+import { v4 as uuid } from 'uuid'
+import { Message } from '../../../typings'
 
 export default function ChatInput() {
   const [input, setInput] = useState('')
+
+  const uploadMessaageToUpstash = async (message: Message) => {
+    const res = await fetch('/api/addMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    })
+
+    const data = await res.json()
+
+    console.log('Message added', data)
+  }
 
   const addMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -11,6 +27,19 @@ export default function ChatInput() {
 
     const messageToSend = input
     setInput('')
+
+    const id = uuid()
+    const message: Message = {
+      id,
+      message: messageToSend,
+      created_at: Date.now(),
+      username: 'Faker',
+      profilePic:
+        'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/4aa68f80-158e-4744-95e9-da53a23e1eba/dasli0e-0189993a-d23c-4825-a6fc-aa0403374080.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzRhYTY4ZjgwLTE1OGUtNDc0NC05NWU5LWRhNTNhMjNlMWViYVwvZGFzbGkwZS0wMTg5OTkzYS1kMjNjLTQ4MjUtYTZmYy1hYTA0MDMzNzQwODAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.fIqn95jSk9V2Ue2AWhx7Ow8k4B1T7to-RjMXJs04mmA',
+      email: 'thisisabullshitemail@fakeemail.com',
+    }
+
+    uploadMessaageToUpstash(message)
   }
 
   return (
